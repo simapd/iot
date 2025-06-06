@@ -287,4 +287,6 @@ void detectMovement() {
 - **Machine Learning para previsão de eventos**
 - **Aplicativo móvel para notificações push**
 
-Este projeto foi desenvolvido para fins acadêmicos como parte do Global Solution da FIAP - DISRUPTIVE ARCHITECTURES: IOT, IOB & GENERATIVE IA# SIMAPD IOT
+## 📄 Licença
+
+Este projeto foi desenvolvido para fins acadêmicos como parte do Global Solution da FIAP - Advanced Business Development with .NET.
