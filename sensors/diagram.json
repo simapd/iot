@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -19.2, "left": -71.96, "attrs": {} },
+    {
+      "type": "wokwi-mpu6050",
+      "id": "imu1",
+      "top": 31.78,
+      "left": 60.52,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "chip-rain-sensor",
+      "id": "chip1",
+      "top": 2.1,
+      "left": -186.08,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "chip-soil-sensor",
+      "id": "chip2",
+      "top": 182.3,
+      "left": -186.12,
+      "rotate": 90,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:GND.2", "imu1:GND", "black", [ "v0", "h28.8", "v28.8" ] ],
+    [ "esp:22", "imu1:SCL", "green", [ "h19.2", "v19.2" ] ],
+    [ "esp:21", "imu1:SDA", "green", [ "h0" ] ],
+    [ "esp:5V", "imu1:VCC", "red", [ "h0.15", "v19.2", "h134.4", "v-172.8" ] ],
+    [ "chip1:VCC", "esp:3V3", "red", [ "v28.8", "h67.2", "v-124.8" ] ],
+    [ "chip1:GND", "esp:CMD", "black", [ "v67.2" ] ],
+    [ "chip2:VCC", "esp:5V", "red", [ "v-9.6", "h48", "v48" ] ],
+    [ "chip2:GND", "esp:GND.1", "black", [ "v-9.6" ] ],
+    [ "chip2:A0", "esp:32", "green", [ "v-28.8", "h48", "v-57.6" ] ],
+    [ "chip1:AO", "esp:35", "green", [ "v19.2", "h19.2", "v-38.4" ] ]
+  ],
+  "dependencies": {}
+}

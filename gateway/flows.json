@@ -1,0 +1,990 @@
+[
+    {
+        "id": "f1a22dbf7983725a",
+        "type": "tab",
+        "label": "IoT Gateway Principal",
+        "disabled": false,
+        "info": "Fluxo principal do gateway IoT com broker MQTT e dashboard"
+    },
+    {
+        "id": "9c23b6bcbbb98193",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "http://172.190.255.213",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ui_base",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "colours"
+            }
+        },
+        "site": {
+            "name": "Gateway IoT - Sistema de Monitoramento",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "ui_tab_dashboard",
+        "type": "ui_tab",
+        "name": "Dashboard Principal",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "ui_group_sensors",
+        "type": "ui_group",
+        "name": "Sensores em Tempo Real",
+        "tab": "ui_tab_dashboard",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui_group_alerts",
+        "type": "ui_group",
+        "name": "Alertas e Status",
+        "tab": "ui_tab_dashboard",
+        "order": 2,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "b7002f4b563943a6",
+        "type": "mqtt in",
+        "z": "f1a22dbf7983725a",
+        "name": "Movement Topic",
+        "topic": "iot/measurement/movement",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "9c23b6bcbbb98193",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1060,
+        "y": 800,
+        "wires": [
+            [
+                "085382308f4d99c2",
+                "df5008a256e43473"
+            ]
+        ]
+    },
+    {
+        "id": "1eca1c6c35d9c455",
+        "type": "function",
+        "z": "f1a22dbf7983725a",
+        "name": "Processador de Alertas",
+        "func": "// Processa alertas baseado no nível de risco\nconst riskLevel = msg.payload.riskLevel;\nconst sensorType = msg.payload.type;\nconst timestamp = msg.payload.timestamp;\n\nif (riskLevel === 'HIGH' || riskLevel === 'CRITICAL') {\n    const alertMsg = {\n        payload: {\n            alert: true,\n            level: riskLevel,\n            sensor: sensorType,\n            message: `ALERTA ${riskLevel}: ${sensorType} detectou situação de risco!`,\n            timestamp: timestamp,\n            color: riskLevel === 'CRITICAL' ? 'red' : 'orange'\n        }\n    };\n    \n    // Armazena alerta no contexto\n    const alerts = global.get('alerts') || [];\n    alerts.push(alertMsg.payload);\n    if (alerts.length > 50) alerts.shift(); // Mantém apenas os 50 últimos\n    global.set('alerts', alerts);\n    \n    return alertMsg;\n}\n\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1960,
+        "y": 1000,
+        "wires": [
+            [
+                "b765463f80e33994"
+            ]
+        ]
+    },
+    {
+        "id": "bc6cf51f16cda56b",
+        "type": "function",
+        "z": "f1a22dbf7983725a",
+        "name": "Encaminhador Backend C#",
+        "func": "// Prepara dados para envio ao backend C#\n// Reformata dados para o formato esperado pelo backend\nconst backendPayload = {\n    sensorId: msg.payload.sensorId,\n    areaId: msg.payload.areaId,\n    type: msg.payload.type,\n    value: msg.payload.value,\n    measuredAt: msg.payload.measuredAt,\n    riskLevel: msg.payload.riskLevel\n};\n\nmsg.payload = backendPayload;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1980,
+        "y": 920,
+        "wires": [
+            [
+                "1c06b891a57c9ee5",
+                "75ce8bbacf6db11c"
+            ]
+        ]
+    },
+    {
+        "id": "1c06b891a57c9ee5",
+        "type": "http request",
+        "z": "f1a22dbf7983725a",
+        "name": "Measurements POST",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://aspnet-wk8k.onrender.com/measurements",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "Content-Type",
+                "valueType": "other",
+                "valueValue": "application/json"
+            }
+        ],
+        "x": 2290,
+        "y": 920,
+        "wires": [
+            [
+                "de3161c38d80119f"
+            ]
+        ]
+    },
+    {
+        "id": "de3161c38d80119f",
+        "type": "debug",
+        "z": "f1a22dbf7983725a",
+        "name": "Resposta Backend",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2540,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "6dfeeb530e68f3d7",
+        "type": "inject",
+        "z": "f1a22dbf7983725a",
+        "name": "Teste Manual",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "iot/sensors/gwx7gh4a86li1nljhai9mv16/n7o93jsxhfflmbnq3cfg7zme",
+        "payload": "{\"sensorId\":\"n7o93jsxhfflmbnq3cfg7zme\",\"areaId\":\"gwx7gh4a86li1nljhai9mv16\",\"type\":\"MOVEMENT\",\"value\":{\"acceleration\":{\"x\":0.05,\"y\":0.03,\"z\":9.78},\"rotation\":{\"x\":0.01,\"y\":0.02,\"z\":0.00},\"level\":\"MEDIUM\"}}",
+        "payloadType": "json",
+        "x": 810,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "75e84f9ab354dddf",
+        "type": "inject",
+        "z": "f1a22dbf7983725a",
+        "name": "Status Inicial",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 1,
+        "topic": "",
+        "payload": "🟢 Gateway IoT Online - Broker MQTT: Porta 1883 | WebSocket: Porta 9001 | Dashboard: http://localhost:1880/ui",
+        "payloadType": "str",
+        "x": 1190,
+        "y": 1260,
+        "wires": [
+            [
+                "478d076c6ff1c4b3"
+            ]
+        ]
+    },
+    {
+        "id": "7e59643bdf79b3aa",
+        "type": "aedes broker",
+        "z": "f1a22dbf7983725a",
+        "name": "MQTT Broker",
+        "mqtt_port": 1883,
+        "mqtt_ws_bind": "port",
+        "mqtt_ws_port": "",
+        "mqtt_ws_path": "",
+        "cert": "",
+        "key": "",
+        "certname": "",
+        "keyname": "",
+        "persistence_bind": "memory",
+        "dburl": "",
+        "usetls": false,
+        "x": 820,
+        "y": 880,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "478d076c6ff1c4b3",
+        "type": "ui_text",
+        "z": "f1a22dbf7983725a",
+        "group": "ui_group_alerts",
+        "order": 2,
+        "width": "12",
+        "height": "2",
+        "name": "Status Sistema",
+        "label": "Status do Sistema",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1900,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "b765463f80e33994",
+        "type": "ui_text",
+        "z": "f1a22dbf7983725a",
+        "group": "ui_group_alerts",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Alerta",
+        "format": "{{msg.payload.message}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 2240,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "7fd1451ad5f436b7",
+        "type": "ui_gauge",
+        "z": "f1a22dbf7983725a",
+        "name": "Nível de Movimento",
+        "group": "ui_group_sensors",
+        "order": 1,
+        "width": "4",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Movimento Sísmico",
+        "label": "nível",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "34",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ff8800"
+        ],
+        "seg1": "8.5",
+        "seg2": "17",
+        "diff": false,
+        "className": "",
+        "x": 1780,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "869d9c88047b6815",
+        "type": "ui_gauge",
+        "z": "f1a22dbf7983725a",
+        "name": "Nível de Chuva",
+        "group": "ui_group_sensors",
+        "order": 2,
+        "width": "4",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Precipitação",
+        "label": "nível",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1023",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ff8800"
+        ],
+        "seg1": "256",
+        "seg2": "512",
+        "diff": false,
+        "className": "",
+        "x": 1760,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "86bd8b97341327a5",
+        "type": "ui_gauge",
+        "z": "f1a22dbf7983725a",
+        "name": "Umidade do Solo",
+        "group": "ui_group_sensors",
+        "order": 3,
+        "width": "4",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Umidade Solo",
+        "label": "nível",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1023",
+        "colors": [
+            "#e6e600",
+            "#ff8800",
+            "#e60900"
+        ],
+        "seg1": "256",
+        "seg2": "512",
+        "diff": false,
+        "className": "",
+        "x": 1770,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "bc82b8f2bc3620f4",
+        "type": "ui_chart",
+        "z": "f1a22dbf7983725a",
+        "name": "Histórico Movimento",
+        "group": "ui_group_sensors",
+        "order": 4,
+        "width": "12",
+        "height": "4",
+        "label": "Movimento Sísmico - Histórico",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "34",
+        "removeOlder": "24",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1780,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "050432d4f0eceb19",
+        "type": "ui_chart",
+        "z": "f1a22dbf7983725a",
+        "name": "Histórico Chuva",
+        "group": "ui_group_sensors",
+        "order": 5,
+        "width": "6",
+        "height": "4",
+        "label": "Precipitação - Histórico",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "1023",
+        "removeOlder": "24",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1760,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ecf0fc31da11fbde",
+        "type": "ui_chart",
+        "z": "f1a22dbf7983725a",
+        "name": "Histórico Solo",
+        "group": "ui_group_sensors",
+        "order": 6,
+        "width": "6",
+        "height": "4",
+        "label": "Umidade Solo - Histórico",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "1023",
+        "removeOlder": "24",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1760,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "085382308f4d99c2",
+        "type": "function",
+        "z": "f1a22dbf7983725a",
+        "name": "Process Data",
+        "func": "const payload = msg.payload;\n\npayload.measuredAt = new Date().toISOString();\n\nconst currentData = global.get('sensorData') || {};\ncurrentData[payload.type] = payload;\nglobal.set('sensorData', currentData);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1260,
+        "y": 800,
+        "wires": [
+            [
+                "bc6cf51f16cda56b",
+                "1eca1c6c35d9c455",
+                "d80830f966301b62"
+            ]
+        ]
+    },
+    {
+        "id": "42aa2580f56c735d",
+        "type": "mqtt in",
+        "z": "f1a22dbf7983725a",
+        "name": "Rain Topic",
+        "topic": "iot/measurement/rain",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "9c23b6bcbbb98193",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1040,
+        "y": 920,
+        "wires": [
+            [
+                "91feaf491516426d"
+            ]
+        ]
+    },
+    {
+        "id": "91feaf491516426d",
+        "type": "function",
+        "z": "f1a22dbf7983725a",
+        "name": "Process Data",
+        "func": "const payload = msg.payload;\n\npayload.measuredAt = new Date().toISOString();\n\nconst currentData = global.get('sensorData') || {};\ncurrentData[payload.type] = payload;\nglobal.set('sensorData', currentData);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1260,
+        "y": 920,
+        "wires": [
+            [
+                "bc6cf51f16cda56b",
+                "1eca1c6c35d9c455",
+                "832a19d6cd43faaa"
+            ]
+        ]
+    },
+    {
+        "id": "94f4f4abe428fdb0",
+        "type": "mqtt in",
+        "z": "f1a22dbf7983725a",
+        "name": "Moisture Topic",
+        "topic": "iot/measurement/moisture",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "9c23b6bcbbb98193",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1050,
+        "y": 1060,
+        "wires": [
+            [
+                "eaec00969d685a07"
+            ]
+        ]
+    },
+    {
+        "id": "eaec00969d685a07",
+        "type": "function",
+        "z": "f1a22dbf7983725a",
+        "name": "Process Data",
+        "func": "const payload = msg.payload;\n\npayload.measuredAt = new Date().toISOString();\n\nconst currentData = global.get('sensorData') || {};\ncurrentData[payload.type] = payload;\nglobal.set('sensorData', currentData);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1260,
+        "y": 1060,
+        "wires": [
+            [
+                "bc6cf51f16cda56b",
+                "1eca1c6c35d9c455",
+                "9049b125c9645488"
+            ]
+        ]
+    },
+    {
+        "id": "75ce8bbacf6db11c",
+        "type": "debug",
+        "z": "f1a22dbf7983725a",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2260,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "df5008a256e43473",
+        "type": "debug",
+        "z": "f1a22dbf7983725a",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "ca27d9cc2943c162",
+        "type": "http in",
+        "z": "f1a22dbf7983725a",
+        "name": "Sensor validation Request",
+        "url": "/sensors/validate",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 1010,
+        "y": 540,
+        "wires": [
+            [
+                "d8896e0997852d2c",
+                "7452d397d36e7a06"
+            ]
+        ]
+    },
+    {
+        "id": "2a563c91fbe961f9",
+        "type": "http request",
+        "z": "f1a22dbf7983725a",
+        "name": "Verify sensor on backend",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1770,
+        "y": 540,
+        "wires": [
+            [
+                "7a79d5ecada8ebde",
+                "0d19830f22d5c2fe"
+            ]
+        ]
+    },
+    {
+        "id": "d8896e0997852d2c",
+        "type": "function",
+        "z": "f1a22dbf7983725a",
+        "name": "Transform queries",
+        "func": "const queries = msg.req.query;\n\nmsg.payload = `https://aspnet-wk8k.onrender.com/risk-areas/${queries.areaId}/sensors/${queries.sensorId}`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 540,
+        "wires": [
+            [
+                "d9cbe2ea44bb2635",
+                "9af7e0ee2022ba58"
+            ]
+        ]
+    },
+    {
+        "id": "7a79d5ecada8ebde",
+        "type": "debug",
+        "z": "f1a22dbf7983725a",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2000,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "d9cbe2ea44bb2635",
+        "type": "debug",
+        "z": "f1a22dbf7983725a",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1580,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "7452d397d36e7a06",
+        "type": "debug",
+        "z": "f1a22dbf7983725a",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "req",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "9af7e0ee2022ba58",
+        "type": "change",
+        "z": "f1a22dbf7983725a",
+        "name": "Set request url",
+        "rules": [
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1540,
+        "y": 540,
+        "wires": [
+            [
+                "2a563c91fbe961f9"
+            ]
+        ]
+    },
+    {
+        "id": "0d19830f22d5c2fe",
+        "type": "http response",
+        "z": "f1a22dbf7983725a",
+        "name": "Sensor Validation Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 2060,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "d80830f966301b62",
+        "type": "change",
+        "z": "f1a22dbf7983725a",
+        "name": "Get Value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.value.acceleration.magnitude",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1500,
+        "y": 700,
+        "wires": [
+            [
+                "7fd1451ad5f436b7",
+                "bc82b8f2bc3620f4"
+            ]
+        ]
+    },
+    {
+        "id": "832a19d6cd43faaa",
+        "type": "change",
+        "z": "f1a22dbf7983725a",
+        "name": "Get Value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.value.rainLevel",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1440,
+        "y": 880,
+        "wires": [
+            [
+                "869d9c88047b6815",
+                "050432d4f0eceb19"
+            ]
+        ]
+    },
+    {
+        "id": "9049b125c9645488",
+        "type": "change",
+        "z": "f1a22dbf7983725a",
+        "name": "Get Value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.value.moistureLevel",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1480,
+        "y": 1120,
+        "wires": [
+            [
+                "86bd8b97341327a5",
+                "ecf0fc31da11fbde"
+            ]
+        ]
+    }
+]
