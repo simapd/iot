@@ -289,4 +289,4 @@ void detectMovement() {
 
 ## 📄 Licença
 
-Este projeto foi desenvolvido para fins acadêmicos como parte do Global Solution da FIAP - Advanced Business Development with .NET.
+Este projeto foi desenvolvido para fins acadêmicos como parte do Global Solution da FIAP - DISRUPTIVE ARCHITECTURES: IOT, IOB & GENERATIVE IA
